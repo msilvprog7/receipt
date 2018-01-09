@@ -1,0 +1,23 @@
+{
+  "name": "receipt",
+  "version": "1.0.0",
+  "description": "receipt is a web app to help users keep track of purchases",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/msilvprog7/receipt.git"
+  },
+  "author": "Michael Snider",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/msilvprog7/receipt/issues"
+  },
+  "homepage": "https://github.com/msilvprog7/receipt#readme",
+  "dependencies": {
+    "express": "^4.16.2",
+    "nunjucks": "^3.0.1"
+  }
+}

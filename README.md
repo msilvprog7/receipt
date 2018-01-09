@@ -1,2 +1,2 @@
 # receipt
-Web app for keeping track of your purchases
+**receipt** is a web app to help users keep track of purchases.
