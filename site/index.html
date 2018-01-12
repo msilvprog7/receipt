@@ -5,7 +5,12 @@
         <div class="row">
             <div class="col-lg-8 col-md-7 col-sm-6">
                 <h1>receipt</h1>
-                <p><b>receipt</b> is a web app to help users keep track of purchases.</p>
+                <h3>Easily keep track of your purchases and keep track of your spending habits</h3>
+                
+                {% if user %}
+                {% else %}         
+                    <a class="facebook login btn logged-out" href="/login"><i class="fa fa-facebook-official facebook" aria-hidden="true"></i> Login with Facebook</a>
+                {% endif %}
             </div>
             <div class="col-lg-4 col-md-5 col-sm-6">
             </div>

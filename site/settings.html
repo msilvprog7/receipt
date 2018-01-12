@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block main %}
+    <div class="page-header">
+        <div class="row">
+            <div class="col-lg-8 col-md-7 col-sm-6">
+                <div class="logged-in">
+                    {% if user %}
+                        <h1>{{ user.name.first }}'s Settings <img class="profile-pic" src="{{ user.picture.url }}" /></h1>
+                        <a class="facebook logout btn" href="/logout"><i class="fa fa-facebook-official facebook" aria-hidden="true"></i> Logout</a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-5 col-sm-6">
+            </div>
+        </div>
+    </div>
+{% endblock %}
