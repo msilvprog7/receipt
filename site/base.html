@@ -5,21 +5,39 @@
         <!-- CSS Resources -->
         <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
         <link href="https://maxcdn.bootstrapcdn.com/bootswatch/4.0.0-beta.2/simplex/bootstrap.min.css" rel="stylesheet" integrity="sha384-ofc00ja/z8wrU97EAHQRb4i4wsa/Zgr9JZll2R3KW33iqhFSfmVz/6xuWFx5pjcn" crossorigin="anonymous">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+        <style>
+            img.profile-pic {
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+            }
+
+            .facebook, .facebook:hover {
+                background-color: #4267b2;
+                color: #ffffff;
+            }
+            
+            .login, .logout {
+                font-size: 20px;
+            }
+        </style>
     </head>
     <body>
         <!-- Nav bar -->
         <div class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container">
-                <a class="navbar-brand" href="#">receipt</a>
+                <a class="navbar-brand" href="/">receipt</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
                 <div class="collapse navbar-collapse" id="navbarResponsive">
                     <ul class="navbar-nav">
-                        <li class="nav-item active">
-                            <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                        <li class="nav-item logged-in">
+                            {% if user %}
+                                <a class="nav-link" href="/settings">settings <i class="fa fa-cog"></i></a>
+                            {% endif %}
                         </li>
                     </ul>
                     <ul class="nav navbar-nav ml-auto">

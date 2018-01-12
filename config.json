@@ -1,0 +1,9 @@
+{
+    "facebook": {
+        "appId": "<facebook-app-id>",
+        "appSecret": "<facebook-app-secret>",
+        "version": "v2.11",
+        "scope": "public_profile,email",
+        "redirect": "/login/facebook"
+    }
+}
