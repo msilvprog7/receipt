@@ -6,7 +6,8 @@ var express = require('express'),
     shortid = require('shortid'),
     fs = require('fs'),
     facebook = require('./server/facebook.js'),
-    logger = require('./server/logger.js');
+    logger = require('./server/logger.js'),
+    receiptsApi = require('./server/receipts.js');
 
 
 /**
@@ -17,8 +18,8 @@ app.set('port', 8080);
 app.set('route', `http://localhost:${app.get('port')}`);
 app.set('config', JSON.parse(fs.readFileSync('./config.json', { encoding: "utf8" })));
 
-app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 app.use(cookieParser());
 app.use(session({ resave: true, saveUninitialized: true, secret: shortid.generate() }));
@@ -70,6 +71,75 @@ app.get('/logout', (req, res) => {
     facebook.logout(app, req, res)
         .then(() => res.redirect('/'))
         .catch(() => res.redirect('/'));
+});
+
+/**
+ * API Routes
+ */
+app.post('/api/v1/receipts', (req, res) => {
+    logger.logRequest(req);
+    
+    facebook.getUser(app, req, res)
+        .then(user => {
+            receiptsApi.create(app, user, req.body)
+                .then(() => res.status(201).send())
+                .catch(() => res.status(400).send());
+        })
+        .catch(() => res.status(401).send());
+});
+
+app.get('/api/v1/receipts', (req, res) => {
+    logger.logRequest(req);
+    
+    facebook.getUser(app, req, res)
+        .then(user => {
+            receiptsApi.get(app, user)
+                .then(receipts => {
+                    if (receipts && receipts.length > 0) {
+                        res.status(200).send(receipts);
+                    } else {
+                        res.status(404).send();
+                    }
+                })
+                .catch(() => res.status(400).send());
+        })
+        .catch(() => res.status(401).send());
+});
+
+app.get('/api/v1/receipts/:id', (req, res) => {
+    logger.logRequest(req);
+    
+    facebook.getUser(app, req, res)
+        .then(user => {
+            receiptsApi.get(app, user, req.params.id)
+                .then(receipt => res.status(200).send(receipt))
+                .catch(() => res.status(404).send());
+        })
+        .catch(() => res.status(401).send());
+});
+
+app.put('/api/v1/receipts/:id', (req, res) => {
+    logger.logRequest(req);
+    
+    facebook.getUser(app, req, res)
+        .then(user => {
+            receiptsApi.update(app, user, req.params.id, req.body)
+                .then(() => res.status(204).send())
+                .catch(() => res.status(404).send());
+        })
+        .catch(() => res.status(401).send());
+});
+
+app.delete('/api/v1/receipts/:id', (req, res) => {
+    logger.logRequest(req);
+    
+    facebook.getUser(app, req, res)
+        .then(user => {
+            receiptsApi.delete(app, user, req.params.id)
+                .then(() => res.status(204).send())
+                .catch(() => res.status(404).send());
+        })
+        .catch(() => res.status(401).send());
 });
 
 
