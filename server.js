@@ -7,6 +7,7 @@ var express = require('express'),
     fs = require('fs'),
     facebook = require('./server/facebook.js'),
     logger = require('./server/logger.js'),
+    date = require('./server/date.js'),
     receiptsApi = require('./server/receipts.js');
 
 
@@ -37,7 +38,19 @@ app.get('/', (req, res) => {
     logger.logRequest(req);
 
     facebook.getUser(app, req, res)
-        .then(user => res.render('index.html', { user: user }))
+        .then(user => {
+            receiptsApi.get(app, user)
+                .then(receipts => res.render('index.html', { 
+                    user: user,
+                    receipts: receipts,
+                    date: date.get()
+                }))
+                .catch(() => res.render('index.html', {
+                    user: user,
+                    receipts: null,
+                    date: date.get()
+                }));
+        })
         .catch(() => res.render('index.html', { user: null }));
 });
 
