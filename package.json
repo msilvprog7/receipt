@@ -4,7 +4,9 @@
   "description": "receipt is a web app to help users keep track of purchases",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "npm run serve",
+    "build": "gulp",
+    "serve": "node dist/server.js"
   },
   "repository": {
     "type": "git",
@@ -17,12 +19,28 @@
   },
   "homepage": "https://github.com/msilvprog7/receipt#readme",
   "dependencies": {
+    "@types/body-parser": "^1.16.8",
+    "@types/cookie-parser": "^1.4.1",
+    "@types/express": "^4.11.0",
+    "@types/express-session": "^1.15.6",
+    "@types/jquery": "^3.3.0",
+    "@types/nunjucks": "^3.0.0",
+    "@types/request": "^2.0.13",
+    "@types/shortid": "0.0.29",
     "body-parser": "^1.18.2",
+    "bootstrap": "^4.0.0",
+    "browserify": "^15.2.0",
     "cookie-parser": "^1.4.3",
     "express": "^4.16.2",
     "express-session": "^1.15.6",
+    "gulp": "^4.0.0",
+    "gulp-typescript": "^3.2.4",
+    "jquery": "^3.3.1",
     "nunjucks": "^3.0.1",
     "request": "^2.83.0",
-    "shortid": "^2.2.8"
+    "shortid": "^2.2.8",
+    "tsify": "^3.0.4",
+    "typescript": "^2.6.2",
+    "vinyl-source-stream": "^2.0.0"
   }
 }

@@ -6,22 +6,7 @@
         <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
         <link href="https://maxcdn.bootstrapcdn.com/bootswatch/4.0.0-beta.2/simplex/bootstrap.min.css" rel="stylesheet" integrity="sha384-ofc00ja/z8wrU97EAHQRb4i4wsa/Zgr9JZll2R3KW33iqhFSfmVz/6xuWFx5pjcn" crossorigin="anonymous">
         <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-        <style>
-            img.profile-pic {
-                width: 50px;
-                height: 50px;
-                border-radius: 50%;
-            }
-
-            .facebook, .facebook:hover {
-                background-color: #4267b2;
-                color: #ffffff;
-            }
-            
-            .login, .logout {
-                font-size: 20px;
-            }
-        </style>
+        <link href="./public/css/style.css" rel="stylesheet">
     </head>
     <body>
         <!-- Nav bar -->
@@ -52,8 +37,6 @@
         </div>
 
         <!-- JS Resources -->
-        {% block js %}{% endblock %}
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js" integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4" crossorigin="anonymous"></script>
+        <script src="./public/js/client.js"></script>
     </body>
 </html>

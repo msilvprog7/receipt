@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block main %}
+    <div class="page-header">
+        <div class="row">
+            <div class="col-lg-8 col-md-7 col-sm-6">
+                {% if user %}
+                    <h1>{{ user.name.first }}'s Dashboard <img class="profile-pic" src="{{ user.picture.url }}" /></h1>
+                    <div class="row">
+                        <div class="col-lg-4 col-md-5 col-sm-6">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">$</span>
+                                    </div>
+                                    <input id="addReceiptDollar" class="form-control" aria-label="Amount (dollar)" type="number" min="0" step="1" value="0">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">.</span>
+                                    </div>
+                                    <input id="addReceiptChange" class="form-control" aria-label="Amount (change)" type="number" min="0" max="99" step="1" value="00">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="addReceiptTransaction">Transaction</label>
+                                <input id="addReceiptTransaction" aria-describedby="addReceiptTransactionHelp" class="form-control" type="input" placeholder="Burgers from ..." />
+                                <small id="addReceiptTransactionHelp" class="form-text text-muted">The transaction.</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="addReceiptDate">Date</label>
+                                <input id="addReceiptDate" aria-describedby="addReceiptDateHelp" class="form-control" type="date" value="{{ date.date }}" />
+                                <small id="addReceiptDateHelp" class="form-text text-muted">The date of the transaction.</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="addReceiptCategory">Category</label>
+                                <input id="addReceiptCategory" aria-describedby="addReceiptCategoryHelp" class="form-control" type="text" placeholder="Outings/Takeout" />
+                                <small id="addReceiptCategoryHelp" class="form-text text-muted">The category of the transaction.</small>
+                            </div>
+                            <button id="addReceiptButton" class="btn btn-primary">Add</button>
+                        </div>
+                        <div id='receipts' class="col-lg-8 col-md-7 col-sm-6">
+                            {% for receipt in receipts %}
+                                <div id='receipt#{{ receipt.id }}' class="card border-light">
+                                    <div class="card-header">{{ receipt.date }} [{{ receipt.category }}] <button id="deleteReceiptButton#{{ receipt.id }}" class="btn btn-danger">Delete</button></div>
+                                    <div class="card-body">
+                                        <h4 class="card-title">{{ receipt.transaction }}</h4>
+                                        <p class="card-text">{{ receipt.amount }}</p>
+                                    </div>
+                                </div>
+
+                                {% if loop.last %}
+                                    <div id='noReceipts' class="card border-info hidden">
+                                        <div class="card-header">No Receipts Found</div>
+                                        <div class="card-body">
+                                                <h4 class="card-title">Add a receipt above to get started.</h4>
+                                                <p class="card-text"></p>
+                                            </div>
+                                    </div>
+                                {% endif %}
+                            {% else %}
+                                <div id='noReceipts' class="card border-info">
+                                    <div class="card-header">No Receipts Found</div>
+                                    <div class="card-body">
+                                            <h4 class="card-title">Add a receipt above to get started.</h4>
+                                            <p class="card-text"></p>
+                                        </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% else %}     
+                    <h1>receipt</h1>
+                    <h3>Easily keep track of your purchases and keep track of your spending habits</h3>
+
+                    <a class="facebook login btn logged-out" href="/login"><i class="fa fa-facebook-official facebook" aria-hidden="true"></i> Login with Facebook</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
