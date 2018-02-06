@@ -1,0 +1,6 @@
+{
+    "client_id": "<facebook-app-id>",
+    "client_secret": "<facebook-app-secret>",
+    "version": "v2.11",
+    "scope": "public_profile,email"
+}

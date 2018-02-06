@@ -5,13 +5,20 @@ const browserify = require("browserify"),
       tsify = require("tsify");
 
 
-gulp.task('server', () => {
+gulp.task('server-js', () => {
     var server = ts.createProject("tsconfig.json");
 
     return server.src()
         .pipe(server())
         .js.pipe(gulp.dest('dist'));
 });
+
+gulp.task('server-config', () => {
+    return gulp.src(['src/**/config.json'])
+        .pipe(gulp.dest('dist'));
+});
+
+gulp.task('server', gulp.parallel('server-js', 'server-config'));
 
 gulp.task('client-js', () => {
     return browserify({
