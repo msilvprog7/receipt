@@ -5,7 +5,7 @@
         "noImplicitAny": true,
         "moduleResolution": "node",
         "sourceMap": true,
-        "outDir": "dist",
+        "outDir": "dist-test",
         "baseUrl": ".",
         "paths": {
             "*": [
@@ -14,9 +14,8 @@
         }
     },
     "include": [
-        "src/**/*"
-    ],
-    "exclude": [
+        "./**/*",
+        "../src/**/*",
         "src/public/**/*"
     ]
 }

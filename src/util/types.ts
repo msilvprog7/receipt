@@ -3,6 +3,7 @@ export interface Dictionary<T> {
 }
 
 export class Dictionary<T> {
+
     constructor () {
         this.dictionary = {};
     }
@@ -62,37 +63,19 @@ export class Dictionary<T> {
     public values (): T[] {
         return this.ids().map(id => this.dictionary[id]);
     }
+
 }
 
-export interface FormattedDateTime {
-    date: string
+export interface Error {
+    message: string;
 }
 
-export class FormattedDateTime {
-    constructor (dt: Date) {
-        this.date = dt.toJSON().split('T')[0]
+export class Error {
+
+    constructor (msg: string) {
+        this.message = msg;
     }
 
-    public static Is (dt: any): dt is FormattedDateTime {
-        // todo: could validate date format, but unused
-        return TypeGuards.IsObject(dt) &&
-               TypeGuards.IsString(dt.date);
-    }
-}
-
-export interface FormattedName {
-    first: string,
-    last: string,
-    full: string
-}
-
-export class FormattedName {
-    public static Is (name: any): name is FormattedName {
-        return TypeGuards.IsObject(name) &&
-               TypeGuards.IsString(name.first) &&
-               TypeGuards.IsString(name.last) &&
-               TypeGuards.IsString(name.full);
-    }
 }
 
 export interface Identifiable {
@@ -100,13 +83,16 @@ export interface Identifiable {
 }
 
 export class Identifiable {
+
     public static Is (identifiable: any): identifiable is Identifiable {
         return TypeGuards.IsObject(identifiable) &&
                TypeGuards.IsString(identifiable.id);
     }
+
 }
 
 export class IdentifiableDictionary<T extends Identifiable> extends Dictionary<T> {
+
     constructor (objects?: T[]) {
         super();
         
@@ -133,6 +119,7 @@ export class IdentifiableDictionary<T extends Identifiable> extends Dictionary<T
     public editIdentifiable (obj: T): boolean {
         return super.edit(obj.id, obj);
     }
+
 }
 
 export interface Index<T> {
@@ -140,38 +127,33 @@ export interface Index<T> {
 }
 
 export class Json {
+
+    public static Parse<T> (obj: any, is: (t: any) => boolean): T {
+        if (!TypeGuards.IsString(obj)) {
+            throw TypeError("Json.Parse<T>( ) expects obj to be string");
+        }
+        
+        let data: any = JSON.parse(obj);
+        if (!TypeGuards.IsObject(data) || !is(data)) {
+            throw TypeError("Json.Parse<T>( ) JSON data does not meet TypeGuard is( )");
+        }
+
+        return data as T;
+    }
+
     public static TryParse<T> (obj: any, is: (t: any) => boolean): Promise<T> {
         return new Promise((resolve, reject) => {
-            if (!TypeGuards.IsString(obj)) {
-                return reject();
-            }
-            
-            let data: any = JSON.parse(obj);
-            if (!TypeGuards.IsObject(data) || !is(data)) {
-                return reject();
-            }
-
-            resolve(data as T);
+            let parsed = Json.Parse<T>(obj, is);
+            return (!parsed)
+                ? reject()
+                : resolve(parsed);
         });
     }
-}
 
-export interface Picture {
-    url: string,
-    width: number,
-    height: number
-}
-
-export class Picture {
-    public static Is (pic: any): pic is Picture {
-        return TypeGuards.IsObject(pic) &&
-               TypeGuards.IsString(pic.url) &&
-               TypeGuards.IsNumber(pic.width) &&
-               TypeGuards.IsNumber(pic.height);
-    }
 }
 
 export class TypeGuards {
+
     public static IsNumber (num: any): num is number {
         return num && typeof(num) === "number";
     }
@@ -187,4 +169,9 @@ export class TypeGuards {
     public static IsObject (obj: any): obj is any {
         return obj && typeof(obj) === "object";
     }
+
+    public static IsFunction (fcn: any): fcn is any {
+        return fcn && typeof(fcn) === "function";
+    }
+
 }
