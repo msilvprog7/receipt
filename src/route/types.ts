@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { Receipt as ServerReceipt } from "../receipt/types";
 import { Identifiable, TypeGuards } from "../util/types";
 
 
@@ -9,11 +10,13 @@ export interface ClientResponse {
 }
 
 export class ClientResponse {
-
-    constructor (user: User, receipts?: Receipt[]) {
-        this.user = user;
-        this.receipts = receipts;
-        this.date = new DateTime(new Date())
+    
+    public static FromData (user: User, receipts?: Receipt[]) {
+        return {
+            user: user,
+            receipts: receipts,
+            date: DateTime.FromDate(new Date())
+        };
     }
 
 }
@@ -37,8 +40,10 @@ export interface DateTime {
 
 export class DateTime {
     
-    constructor (dt: Date) {
-        this.date = dt.toJSON().split('T')[0]
+    public static FromDate (dt: Date): DateTime {
+        return {
+            date: dt.toJSON().split('T')[0]
+        };
     }
 
     public static Is (dt: any): dt is DateTime {
@@ -132,6 +137,16 @@ export class Receipt {
                TypeGuards.IsNumber(req.amount) &&
                TypeGuards.IsStringDate(req.date) &&
                TypeGuards.IsString(req.category);
+    }
+
+    public static FromServerReceipt (receipt: ServerReceipt): Receipt {
+        return {
+            id: receipt.id,
+            transaction: receipt.transaction,
+            amount: receipt.amount,
+            date: receipt.date.toJSON(),
+            category: receipt.category
+        };
     }
 
 }

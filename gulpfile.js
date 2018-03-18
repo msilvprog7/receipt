@@ -4,7 +4,9 @@ const browserify = require("browserify"),
       ts = require("gulp-typescript"),
       tsify = require("tsify");
 
-
+/**
+ * Server build
+ */
 gulp.task('server-js', () => {
     var server = ts.createProject("tsconfig.json");
 
@@ -20,6 +22,10 @@ gulp.task('server-config', () => {
 
 gulp.task('server', gulp.parallel('server-js', 'server-config'));
 
+
+/**
+ * Client build
+ */
 gulp.task('client-js', () => {
     return browserify({
         basedir: './src/public',
@@ -45,4 +51,20 @@ gulp.task('client-css', () => {
 
 gulp.task('client', gulp.parallel('client-js', 'client-css', 'client-views'));
 
+
+/**
+ * Test build
+ */
+gulp.task('test', () => {
+    var test = ts.createProject("test/tsconfig.json");
+
+    return test.src()
+        .pipe(test())
+        .js.pipe(gulp.dest('dist-test'));
+});
+
+
+/**
+ * Default build
+ */
 gulp.task('default', gulp.parallel('client', 'server'));

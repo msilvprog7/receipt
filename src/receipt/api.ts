@@ -2,25 +2,25 @@ import { IReceiptClient, Receipt, TempUserStore, User } from "./types";
 import { ILogger } from "../util/logger/types";
 import { IdentifiableDictionary, TypeGuards, Identifiable } from "../util/types";
 
-const tempStore: TempUserStore = new TempUserStore();
-
 
 export class ReceiptClient extends IReceiptClient {
 
     private readonly logger: ILogger;
+    private tempStore: TempUserStore;
 
-    constructor (logger: ILogger) {
+    constructor (logger: ILogger, tempStore?: TempUserStore) {
         super();
         this.logger = logger;
+        this.tempStore = tempStore || new TempUserStore();
     }
 
     public add (user: User, receipt: Receipt): Promise<void> {
         return new Promise((resolve, reject) => {
-            if (!tempStore.get(user.id) && !tempStore.add(user.id, new IdentifiableDictionary<Receipt>())) {
+            if (!this.tempStore.get(user.id) && !this.tempStore.add(user.id, new IdentifiableDictionary<Receipt>())) {
                 return reject();
             }
     
-            return (!tempStore.get(user.id).addIdentifiable(receipt))
+            return (!this.tempStore.get(user.id).addIdentifiable(receipt))
                 ? reject()
                 : resolve();
         });
@@ -28,15 +28,15 @@ export class ReceiptClient extends IReceiptClient {
 
     public all (user: User): Promise<Receipt[]> {
         return new Promise((resolve, reject) => {
-            return (!tempStore.get(user.id))
+            return (!this.tempStore.get(user.id))
                 ? resolve([])
-                : resolve(tempStore.get(user.id).values());
+                : resolve(this.tempStore.get(user.id).values());
         });
     }
 
     public edit (user: User, receipt: Receipt): Promise<void> {
         return new Promise((resolve, reject) => {
-            return (!tempStore.get(user.id) || !tempStore.get(user.id).editIdentifiable(receipt))
+            return (!this.tempStore.get(user.id) || !this.tempStore.get(user.id).editIdentifiable(receipt))
                 ? reject()
                 : resolve();
         });
@@ -44,15 +44,15 @@ export class ReceiptClient extends IReceiptClient {
 
     public get (user: User, id: string): Promise<Receipt> {
         return new Promise((resolve, reject) => {
-            return (!tempStore.get(user.id) || !tempStore.get(user.id).get(id))
+            return (!this.tempStore.get(user.id) || !this.tempStore.get(user.id).get(id))
                 ? reject()
-                : resolve(tempStore.get(user.id).get(id));
+                : resolve(this.tempStore.get(user.id).get(id));
         });
     }
 
     public remove (user: User, id: string): Promise<void> {
         return new Promise((resolve, reject) => {
-            return (!tempStore.get(user.id) || !tempStore.get(user.id).remove(id))
+            return (!this.tempStore.get(user.id) || !this.tempStore.get(user.id).remove(id))
                 ? reject()
                 : resolve();
         });

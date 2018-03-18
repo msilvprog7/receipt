@@ -20,10 +20,15 @@ export class FacebookClient extends IFacebookClient {
 
     constructor (logger: ILogger) {
         super();
-        this.config = Json.Parse<Config>(
-            fs.readFileSync(path.join(__dirname, 'config.json'), { encoding: 'utf8' }), 
-            Config.Is,
-            () => logger.exit(2, "Unable to load config.json for FacebookClient"));
+        
+        try {
+            this.config = Json.Parse<Config>(
+                fs.readFileSync(path.join(__dirname, 'config.json'), { encoding: 'utf8' }), 
+                Config.Is);
+        } catch (err) {
+            throw new TypeError("Unable to load config.json for FacebookClient");
+        }
+
         this.logger = logger;
         this.authorizationRequest = {
             uri: `https://www.facebook.com/${this.config.version}/dialog/oauth`,
@@ -53,7 +58,7 @@ export class FacebookClient extends IFacebookClient {
                         this.logger.logResponse(res, err);
                         return reject();
                     }
-    
+
                     Json.TryParse<User>(body, User.Is)
                         .then(user => resolve(user))
                         .catch(() => reject());

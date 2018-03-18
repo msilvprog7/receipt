@@ -28,10 +28,15 @@ export class RouteClient extends IRouteClient {
 
     constructor (logger: ILogger, facebookClient: IFacebookClient, receiptClient: IReceiptClient) {
         super();
-        this.config = Json.Parse<Config>(
+        
+        try {
+            this.config = Json.Parse<Config>(
                 fs.readFileSync(path.join(__dirname, 'config.json'), { encoding: 'utf8' }), 
-                Config.Is,
-                () => logger.exit(1, "Unable to load config.json for RouteClient"));
+                Config.Is);
+        } catch (err) {
+            throw new TypeError("Unable to load config.json for RouteClient");
+        }
+
         this.app = express();
         this.logger = logger;
         this.facebookClient = facebookClient;
@@ -50,9 +55,9 @@ export class RouteClient extends IRouteClient {
     protected index (req: Request, res: Response): void {
         this.facebookClient.getUser(req)
             .then(fbUser => {
-                let user = new User(fbUser);
+                let user = User.FromFacebookUser(fbUser);
                 this.receiptClient.all(user)
-                    .then(receipts => res.render('index.html', new ClientResponse(user, receipts.map(r => r.toClientReceipt()))))
+                    .then(receipts => res.render('index.html', ClientResponse.FromData(user, receipts.map(ClientReceipt.FromServerReceipt))))
                     .catch(() => res.render('index.html', new Error("Unable to get receipts for user")));
             })
             .catch(() => res.render('index.html'));
@@ -73,7 +78,7 @@ export class RouteClient extends IRouteClient {
 
     protected settings (req: Request, res: Response): void {
         this.facebookClient.getUser(req)
-            .then(fbUser => res.render('settings.html', new ClientResponse(new User(fbUser))))
+            .then(fbUser => res.render('settings.html', ClientResponse.FromData(User.FromFacebookUser(fbUser))))
             .catch(() => res.redirect('/'));
     }
 
@@ -89,7 +94,7 @@ export class RouteClient extends IRouteClient {
                 ClientReceipt.TryParse(req.body)
                     .then(r => {
                         r.id = r.id || shortid.generate();
-                        this.receiptClient.add(new User(fbUser), new Receipt(r))
+                        this.receiptClient.add(User.FromFacebookUser(fbUser), Receipt.FromClientReceipt(r))
                             .then(() => res.status(201).send(r))
                             .catch(() => res.status(500).send());
                     })
@@ -101,10 +106,10 @@ export class RouteClient extends IRouteClient {
     protected all (req: Request, res: Response): void {
         this.facebookClient.getUser(req)
             .then(fbUser => {
-                this.receiptClient.all(new User(fbUser))
+                this.receiptClient.all(User.FromFacebookUser(fbUser))
                     .then(receipts => {
                         return (receipts.length > 0)
-                            ? res.status(200).send(receipts.map(r => r.toClientReceipt()))
+                            ? res.status(200).send(receipts.map(ClientReceipt.FromServerReceipt))
                             : res.status(404).send();
                     })
                     .catch(() => res.status(500).send());
@@ -115,7 +120,7 @@ export class RouteClient extends IRouteClient {
     protected get (req: Request, res: Response): void {
         this.facebookClient.getUser(req)
             .then(fbUser => {
-                this.receiptClient.get(new User(fbUser), req.params.id)
+                this.receiptClient.get(User.FromFacebookUser(fbUser), req.params.id)
                     .then(receipt => res.status(200).send(receipt))
                     .catch(() => res.status(404).send());
             })
@@ -127,7 +132,7 @@ export class RouteClient extends IRouteClient {
             .then(fbUser => {
                 ClientReceipt.TryParse(req.body)
                     .then(r => {
-                        this.receiptClient.edit(new User(fbUser), new Receipt(r))
+                        this.receiptClient.edit(User.FromFacebookUser(fbUser), Receipt.FromClientReceipt(r))
                             .then(() => res.status(200).send(r))
                             .catch(() => res.status(500).send());
                     })
@@ -139,7 +144,7 @@ export class RouteClient extends IRouteClient {
     protected remove (req: Request, res: Response): void {
         this.facebookClient.getUser(req)
             .then(fbUser => {
-                this.receiptClient.remove(new User(fbUser), req.params.id)
+                this.receiptClient.remove(User.FromFacebookUser(fbUser), req.params.id)
                     .then(() => res.status(204).send())
                     .catch(() => res.status(404).send());
             })

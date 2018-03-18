@@ -60,12 +60,14 @@ export interface Receipt extends Identifiable {
 
 export class Receipt {
 
-    constructor (receipt: ClientReceipt) {
-        this.id = receipt.id;
-        this.transaction = receipt.transaction;
-        this.amount = receipt.amount;
-        this.date = new Date(receipt.date);
-        this.category = receipt.category;
+    public static FromClientReceipt (receipt: ClientReceipt): Receipt {
+        return {
+            id: receipt.id,
+            transaction: receipt.transaction,
+            amount: receipt.amount,
+            date: new Date(receipt.date),
+            category: receipt.category
+        };
     }
 
     public static Is (receipt: any): receipt is Receipt {
@@ -75,16 +77,6 @@ export class Receipt {
                TypeGuards.IsNumber(receipt.amount) &&
                TypeGuards.IsObject(receipt.date) &&
                TypeGuards.IsString(receipt.category);
-    }
-
-    public toClientReceipt (): ClientReceipt {
-        return {
-            id: this.id,
-            transaction: this.transaction,
-            amount: this.amount,
-            date: this.date.toJSON(),
-            category: this.category
-        };
     }
 
 }
@@ -104,17 +96,19 @@ export interface User extends Identifiable {
 
 export class User {
 
-    constructor (user: FacebookUser) {
-        this.id = user.id;
-        this.name = {
-            first: user.name.split(' ')[0],
-            last: user.name.split(' ').slice(-1)[0],
-            full: user.name
-        };
-        this.picture = {
-            url: user.picture.data.url,
-            width: user.picture.data.width,
-            height: user.picture.data.height
+    public static FromFacebookUser (user: FacebookUser): User {
+        return {
+            id: user.id,
+            name: {
+                first: user.name.split(' ')[0],
+                last: user.name.split(' ').slice(-1)[0],
+                full: user.name
+            },
+            picture: {
+                url: user.picture.data.url,
+                width: user.picture.data.width,
+                height: user.picture.data.height
+            }
         };
     }
 

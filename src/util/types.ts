@@ -128,20 +128,14 @@ export interface Index<T> {
 
 export class Json {
 
-    public static Parse<T> (obj: any, is: (t: any) => boolean, errorCallback?: () => void): T {
-        if (!TypeGuards.IsFunction(errorCallback)) {
-            errorCallback = () => { };
-        }
-
+    public static Parse<T> (obj: any, is: (t: any) => boolean): T {
         if (!TypeGuards.IsString(obj)) {
-            errorCallback();
-            return null;
+            throw TypeError("Json.Parse<T>( ) expects obj to be string");
         }
         
         let data: any = JSON.parse(obj);
         if (!TypeGuards.IsObject(data) || !is(data)) {
-            errorCallback();
-            return null;
+            throw TypeError("Json.Parse<T>( ) JSON data does not meet TypeGuard is( )");
         }
 
         return data as T;
